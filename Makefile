@@ -1,6 +1,6 @@
 CC=g++
 #CC=g++
-CFLAGS=-O2 -std=c++11 -pthread -Wall -Wextra -pedantic -lssl -lcrypto
+CFLAGS=-O2 -std=c++11 -pthread -Wall -Wextra -pedantic
 
 BIN=mygit
 SRC=$(wildcard **/*.cpp)
