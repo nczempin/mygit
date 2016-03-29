@@ -1,6 +1,6 @@
-CC=clang++-3.6
+CC=g++
 #CC=g++
-CFLAGS=-O2 -std=c++11 -pthread -Wall -Wextra -pedantic
+CFLAGS=-O2 -std=c++11 -pthread -Wall -Wextra -pedantic -lssl -lcrypto
 
 BIN=mygit
 SRC=$(wildcard **/*.cpp)
@@ -13,7 +13,7 @@ OBJ=$(CPP_OBJ)
 all: $(BIN)
 
 $(BIN): $(OBJ)
-	$(CC) -o $(BIN) $(CFLAGS) -lcrypto -lssl $^ 
+	$(CC) -o $(BIN) $(CFLAGS)  $^ -lssl -lcrypto
 %.o: %.cpp
 	$(CC) -o $@ -c $(CFLAGS) $^
 

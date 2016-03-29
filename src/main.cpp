@@ -24,11 +24,17 @@ int main(int argc, char* argv[])
   if (argc == 2) {
     return 0;
   }
+  
+  // we have our command and its parameter
+  // now read the file contents
   string path = argv[2]; //TODO error handling
-  ifstream myfile(path);
+  //TODO handle multiple files as parameter
+  ifstream myfile;
+  myfile.open( path );
   ostringstream file_contents;
   if (myfile.is_open()) {
     string line;
+    //TODO use proper buffering, especially for large files
     while (getline(myfile, line)) {
       file_contents << line << '\n';
     }
@@ -38,19 +44,22 @@ int main(int argc, char* argv[])
         << endl;
     return 128;
   }
-  //const unsigned char str[] = "Original String";
   string file_string = file_contents.str();
-
-  const char* str = file_string.c_str();
-  char * cstr = new char[file_string.length() + 1];
-  strcpy(cstr, str);
-  //cout << cstr << endl;
-  unsigned char hash[SHA_DIGEST_LENGTH]; // == 20
-  unsigned long int length = sizeof(cstr) - 1;
-  SHA1((const unsigned char*) cstr, length, hash);
+  
+  // Add the git specific text, "blob " plus size of the original blob (file)
+  string blobTxt = "blob " + to_string(file_string.size());
+  string combined = blobTxt + '\0' + file_string;
+  const char* str = combined.c_str();
+  int l = combined.length() ;
+  
+  // convert to sha1
+  unsigned char hash[SHA_DIGEST_LENGTH];
+  SHA1((const unsigned char*) str, l, hash);
+  // convert to 2 hex nibbles per byte and output.
   for (auto &n : hash) {
-    cout << hex << setw(2) << (unsigned int) n;
+    cout << hex << setfill('0') << setw(2) << (unsigned int) n;
   }
   cout << endl;
+  
   return 0;
 }
