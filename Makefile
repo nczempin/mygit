@@ -13,7 +13,7 @@ OBJ=$(CPP_OBJ)
 all: $(BIN)
 
 $(BIN): $(OBJ)
-	$(CC) -o $(BIN) $(CFLAGS)  $^ 
+	$(CC) -o $(BIN) $(CFLAGS) -lcrypto -lssl $^ 
 %.o: %.cpp
 	$(CC) -o $@ -c $(CFLAGS) $^
 
