@@ -2,7 +2,7 @@ CC=g++
 #CC=g++
 CFLAGS=-O2 -std=c++11 -pthread -Wall -Wextra -pedantic
 
-BIN=mygit
+BIN= mygit
 SRC=$(wildcard **/*.cpp)
 GAS=$(wildcard *.s)
 NASM=$(wildcard *.asm)
