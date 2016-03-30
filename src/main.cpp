@@ -30,25 +30,31 @@ void print_usage()
   cout << "to read about a specific subcommand or concept." << endl;
 }
 
+struct option* long_options_()
+{
+  static struct option long_options[] =
+    { //              { "stdin", no_argument, &stdin_flag, 1 },
+      //              { "stdin-paths", no_argument, &stdin_paths_flag, 1 },
+      //              { "no-filters", no_argument, &no_filters_flag, 1 },
+      //              { "literally", no_argument, &literally_flag, 1 },
+        { "path", required_argument, 0, 0 },
+        { 0, 0, 0, 0 } };
+  return long_options;
+}
+
 int main(int argc, char* argv[])
 {
   --argc;
   ++argv;
   // skip actual command //TODO: extract actual command
   int c;
-  int stdin_flag = 0;
-  int stdin_paths_flag = 0;
-  int no_filters_flag = 0;
-  int literally_flag = 0;
   while (1) {
-    static struct option long_options[] =
-          {
-              { "stdin", no_argument, &stdin_flag, 1 },
-              { "stdin-paths", no_argument, &stdin_paths_flag, 1 },
-              { "no-filters", no_argument, &no_filters_flag, 1 },
-              { "literally", no_argument, &literally_flag, 1 },
-              { "path", required_argument, 0, 0 },
-              { 0, 0, 0, 0 } };
+    int stdin_flag = 0;
+    int stdin_paths_flag = 0;
+    int no_filters_flag = 0;
+    int literally_flag = 0;
+    struct option *long_options = long_options_();
+
     /* getopt_long stores the option index here. */
     int option_index = 0;
 
@@ -86,10 +92,10 @@ int main(int argc, char* argv[])
     }
   }
 
-  if (literally_flag) puts("literally flag is set");
-  if (no_filters_flag) puts("no-filters flag is set");
-  if (stdin_flag) puts("stdin flag is set");
-  if (stdin_paths_flag) puts("stdin paths flag is set");
+//  if (literally_flag) puts("literally flag is set");
+//  if (no_filters_flag) puts("no-filters flag is set");
+//  if (stdin_flag) puts("stdin flag is set");
+//  if (stdin_paths_flag) puts("stdin paths flag is set");
 
   vector<string> files;
   while (optind < argc) {
