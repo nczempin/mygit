@@ -11,6 +11,7 @@
  */
 
 #include <memory>
+#include <string>
 
 #include "Command.h"
 #include "MyGit.h"
@@ -24,6 +25,7 @@ public:
   virtual ~Hash_object();
 
   void execute();
+  string getShortOptions();
 
 private:
   shared_ptr<MyGit> mygit;

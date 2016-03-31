@@ -48,7 +48,52 @@ struct option* long_options_()
   return long_options;
 }
 
-void handle_options(int argc, char* argv[])
+void do_long_option(option long_option)
+{
+  // long option selected
+  /* If this option set a flag, do nothing else now. */
+  if (long_option.flag != 0) {
+    return;
+  }
+
+  printf("option %s", long_option.name);
+  if (optarg) {
+    printf(" with arg %s", optarg);
+  }
+
+  printf("\n");
+}
+
+void do_short_option(int c)
+{
+  switch (c) {
+  case 'w':
+    puts("option -w\n");
+    break;
+  case 't':
+    printf("option -t with value `%s'\n", optarg);
+    break;
+  case '?':
+    /* getopt_long already printed an error message. */
+    break;
+  default:
+    throw 129; //TODO is this specific or generic?
+  }
+}
+
+void hopt(shared_ptr<Command> command, int c, int option_index,
+    struct option* long_options)
+{
+  option long_option = long_options[option_index];
+  if (c == 0) {
+    do_long_option(long_option);
+
+  } else {
+    do_short_option(c);
+  }
+}
+
+void handle_options(shared_ptr<Command> command, int argc, char* argv[])
 {
   //TODO separate generic part from hash-object specific part
   int c;
@@ -56,39 +101,18 @@ void handle_options(int argc, char* argv[])
     struct option* long_options = long_options_();
     /* getopt_long stores the option index here. */
     int option_index = 0;
-    c = getopt_long(argc, argv, "wt:", long_options, &option_index);
+    string short_options_hash_object = command->getShortOptions();
+    c = getopt_long(argc, argv, short_options_hash_object.c_str(), long_options,
+        &option_index);
     /* Detect the end of the options. */
-    if (c == -1)
+    if (c == -1) {
       break;
-
-    switch (c) {
-    case 0:
-      /* If this option set a flag, do nothing else now. */
-      if (long_options[option_index].flag != 0)
-        break;
-
-      printf("option %s", long_options[option_index].name);
-      if (optarg)
-        printf(" with arg %s", optarg);
-
-      printf("\n");
-      break;
-    case 'w':
-      puts("option -w\n");
-      break;
-    case 't':
-      printf("option -t with value `%s'\n", optarg);
-      break;
-    case '?':
-      /* getopt_long already printed an error message. */
-      break;
-    default:
-      throw 129; //TODO is this specific or generic?
     }
+    hopt(command, c, option_index, long_options);
   }
 }
 
-unique_ptr<Command> determine_command(shared_ptr<MyGit> mygit, int argc,
+shared_ptr<Command> determine_command(shared_ptr<MyGit> mygit, int argc,
     char* argv[])
 {
   if (argc == 1) {
@@ -105,7 +129,7 @@ unique_ptr<Command> determine_command(shared_ptr<MyGit> mygit, int argc,
     throw 0;
   }
   Hash_object* hashObject = new Hash_object(mygit);
-  unique_ptr<Command> p(hashObject);
+  shared_ptr<Command> p(hashObject);
   return p;
 }
 
@@ -114,14 +138,14 @@ int main(int argc, char* argv[])
   shared_ptr<MyGit> mygit(new MyGit());
   mygit->setPath("1");
 
-  unique_ptr<Command> command = determine_command(mygit, argc, argv);
+  shared_ptr<Command> command = determine_command(mygit, argc, argv);
   try {
     // TODO right now this will only check for "hash-object" command. It should check for a collection of commands and decide on the appropriate Command subclass (TODO)
     --argc;
     ++argv;
     // skip actual command //TODO: extract actual command
     cout << "before: " << argc << ", " << optind << endl;
-    handle_options(argc, argv);
+    handle_options(command, argc, argv);
     cout << "after: " << argc << ", " << optind << endl;
   } catch (const int n) {
     if (n == 129) { //TODO give this magic number a name
