@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "Hashobject.h"
+#include "MyGit.h"
 
 using namespace std;
 
@@ -141,12 +142,13 @@ int main(int argc, char* argv[])
   // we have our command and its parameter
 
   // now read the file contents
-  Hash_object hash_object;
   // TODO set parameters / handle options
+  MyGit mygit;
   for (string path : files) {
-    hash_object.set_parameter(path);
     try {
-      hash_object.execute_command();
+      mygit.setPath(path);
+      Hash_object hash_object(mygit);
+      hash_object.execute();
     } catch (int n) {
       cout << "fatal: Cannot open '" << path << "': No such file or directory"
           << endl;
