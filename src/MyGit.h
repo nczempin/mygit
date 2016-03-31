@@ -8,7 +8,9 @@
 #ifndef MYGIT_H_
 #define MYGIT_H_
 
+#include <iostream>
 #include <string>
+
 using namespace std;
 class MyGit
 {

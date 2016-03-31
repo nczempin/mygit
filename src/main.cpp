@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -87,7 +88,8 @@ void handle_options(int argc, char* argv[])
   }
 }
 
-void determine_command(int argc, char* argv[])
+unique_ptr<Command> determine_command(shared_ptr<MyGit> mygit, int argc,
+    char* argv[])
 {
   if (argc == 1) {
     print_usage();
@@ -102,13 +104,19 @@ void determine_command(int argc, char* argv[])
   if (argc == 2) {
     throw 0;
   }
+  Hash_object* hashObject = new Hash_object(mygit);
+  unique_ptr<Command> p(hashObject);
+  return p;
 }
 
 int main(int argc, char* argv[])
 {
+  shared_ptr<MyGit> mygit(new MyGit());
+  mygit->setPath("1");
+
+  unique_ptr<Command> command = determine_command(mygit, argc, argv);
   try {
     // TODO right now this will only check for "hash-object" command. It should check for a collection of commands and decide on the appropriate Command subclass (TODO)
-    determine_command(argc, argv);
     --argc;
     ++argv;
     // skip actual command //TODO: extract actual command
@@ -143,12 +151,10 @@ int main(int argc, char* argv[])
 
   // now read the file contents
   // TODO set parameters / handle options
-  MyGit mygit;
   for (string path : files) {
     try {
-      mygit.setPath(path);
-      Hash_object hash_object(mygit);
-      hash_object.execute();
+      mygit->setPath(path);
+      command->execute();
     } catch (int n) {
       cout << "fatal: Cannot open '" << path << "': No such file or directory"
           << endl;

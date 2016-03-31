@@ -6,18 +6,19 @@
  */
 
 #include "Hashobject.h"
-#include "MyGit.h"
 
 #include <openssl/sha.h>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
+#include <string>
+
 
 using namespace std;
 
-Hash_object::Hash_object(MyGit& mygit) :
-    mygit(mygit)
+Hash_object::Hash_object(shared_ptr<MyGit> mg) :
+    mygit(mg)
 {
 }
 
@@ -28,9 +29,10 @@ Hash_object::~Hash_object()
 
 void Hash_object::execute()
 {
-  //TODO handle multiple files as parameter
   ifstream myfile;
-  myfile.open(mygit.getPath());
+  //TODO handle multiple files as parameter
+  string path = mygit->getPath();
+  myfile.open(path);
   ostringstream file_contents;
   if (myfile.is_open()) {
     string line;

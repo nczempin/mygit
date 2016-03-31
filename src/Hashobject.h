@@ -1,28 +1,32 @@
+#ifndef HASHOBJECT_H_
+#define HASHOBJECT_H_
+
 /*
+
  * Hashobject.h
 
  *
  *  Created on: Mar 29, 2016
  *      Author: nczempin
  */
+
+#include <memory>
+
 #include "Command.h"
-#include <string>
+#include "MyGit.h"
 
 using namespace std;
 
-#ifndef HASHOBJECT_H_
-#define HASHOBJECT_H_
-
-class Hash_object: Command
+class Hash_object: public Command
 {
 public:
-  Hash_object(MyGit& mygit);
+  Hash_object(shared_ptr<MyGit> mygit);
   virtual ~Hash_object();
 
   void execute();
 
 private:
-  MyGit& mygit;
+  shared_ptr<MyGit> mygit;
 };
 
 #endif /* HASHOBJECT_H_ */
