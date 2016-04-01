@@ -12,8 +12,6 @@
 #include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <string>
-
 
 using namespace std;
 
@@ -58,4 +56,35 @@ void Hash_object::execute()
     cout << hex << setfill('0') << setw(2) << (unsigned int) (n);
   }
   cout << endl;
+}
+
+void Hash_object::do_long_option(bool flag, string name, string argument)
+{
+  if (flag) {
+    cout << "flag" << endl;
+  }
+  cout << "name: " << name << endl;
+  cout << "argument: " << argument << endl;
+}
+
+string Hash_object::getShortOptions()
+{
+  return "wt:";
+}
+void Hash_object::do_short_option(int c, string argument)
+{
+  cout << "switchin'" << endl;
+  switch (c) {
+  case 'w':
+    cout << "option -w" << endl;
+    break;
+  case 't':
+    cout << "option -t with value `" << argument << "'\n" << endl;
+    break;
+  case '?':
+    /* getopt_long already printed an error message. */
+    break;
+  default:
+    throw 129; //TODO is this specific or generic?
+  }
 }

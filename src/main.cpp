@@ -20,7 +20,7 @@ void print_usage()
       << endl;
   cout << "start a working area (see also: mygit help tutorial)" << endl;
   cout
-      << "   init       Create an empty Git repository or reinitizalize an existing one"
+      << "   init       Create an empty Git repository or reinitialize an existing one"
       << endl;
   cout << "[TODO]" << endl;
   cout << endl;
@@ -32,12 +32,13 @@ void print_usage()
   cout << "to read about a specific subcommand or concept." << endl;
 }
 
+//TODO: move to command
 struct option* long_options_()
 {
-  int stdin_flag = 0;
-  int stdin_paths_flag = 0;
-  int no_filters_flag = 0;
-  int literally_flag = 0;
+//  int stdin_flag = 0;
+//  int stdin_paths_flag = 0;
+//  int no_filters_flag = 0;
+//  int literally_flag = 0;
   static struct option long_options[] =
         { //              { "stdin", no_argument, &stdin_flag, 1 },
           //              { "stdin-paths", no_argument, &stdin_paths_flag, 1 },
@@ -48,53 +49,24 @@ struct option* long_options_()
   return long_options;
 }
 
-void do_long_option(option long_option)
-{
-  // long option selected
-  /* If this option set a flag, do nothing else now. */
-  if (long_option.flag != 0) {
-    return;
-  }
-
-  printf("option %s", long_option.name);
-  if (optarg) {
-    printf(" with arg %s", optarg);
-  }
-
-  printf("\n");
-}
-
-void do_short_option(int c)
-{
-  switch (c) {
-  case 'w':
-    puts("option -w\n");
-    break;
-  case 't':
-    printf("option -t with value `%s'\n", optarg);
-    break;
-  case '?':
-    /* getopt_long already printed an error message. */
-    break;
-  default:
-    throw 129; //TODO is this specific or generic?
-  }
-}
-
 void hopt(shared_ptr<Command> command, int c, int option_index,
     struct option* long_options)
 {
   option long_option = long_options[option_index];
   if (c == 0) {
-    do_long_option(long_option);
-
+    command->do_long_option(long_option.flag, long_option.name, optarg);
   } else {
-    do_short_option(c);
+    string argument = "";
+    if (optarg) {
+      argument = string(optarg);
+    }
+    command->do_short_option(c, argument);
   }
 }
 
 void handle_options(shared_ptr<Command> command, int argc, char* argv[])
 {
+  cout << "handle_options" << endl;
   //TODO separate generic part from hash-object specific part
   int c;
   while (1) {
@@ -104,6 +76,7 @@ void handle_options(shared_ptr<Command> command, int argc, char* argv[])
     string short_options_hash_object = command->getShortOptions();
     c = getopt_long(argc, argv, short_options_hash_object.c_str(), long_options,
         &option_index);
+    cout << "c: " << c << endl;
     /* Detect the end of the options. */
     if (c == -1) {
       break;
@@ -158,14 +131,14 @@ int main(int argc, char* argv[])
 //  if (stdin_flag) puts("stdin flag is set");
 //  if (stdin_paths_flag) puts("stdin paths flag is set");
 
-  vector<string> files;
+  vector<string> varargs;
   while (optind < argc) { //TODO get rid of dependency on optind
     char* file = argv[optind++];
-    files.push_back(file);
+    varargs.push_back(file);
   }
-  if (files.size() > 0) {
+  if (varargs.size() > 0) {
     cout << "Files to consider: ";
-    for (const auto& file : files) {
+    for (const auto& file : varargs) {
       cout << file << " ";
     }
     cout << endl;
@@ -175,7 +148,7 @@ int main(int argc, char* argv[])
 
   // now read the file contents
   // TODO set parameters / handle options
-  for (string path : files) {
+  for (string path : varargs) {
     try {
       mygit->setPath(path);
       command->execute();

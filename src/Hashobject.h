@@ -26,8 +26,9 @@ public:
 
   void execute();
   string getShortOptions();
-
-private:
+  void do_long_option(bool flag, string name, string argument);
+  void do_short_option(int c, string argument);
+  private:
   shared_ptr<MyGit> mygit;
 };
 

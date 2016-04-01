@@ -9,6 +9,7 @@
 #define COMMAND_H_
 
 #include <string>
+
 using namespace std;
 
 class Command
@@ -18,6 +19,8 @@ public:
   virtual ~Command();
   virtual void execute() = 0;
   virtual string getShortOptions() = 0;
+  virtual void do_long_option(bool flag, string name, string argument) = 0;
+  virtual void do_short_option(int c, string argument) = 0;
 };
 
 #endif /* COMMAND_H_ */
