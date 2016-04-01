@@ -73,7 +73,6 @@ string Hash_object::getShortOptions()
 }
 void Hash_object::do_short_option(int c, string argument)
 {
-  cout << "switchin'" << endl;
   switch (c) {
   case 'w':
     cout << "option -w" << endl;

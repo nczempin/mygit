@@ -66,8 +66,6 @@ void hopt(shared_ptr<Command> command, int c, int option_index,
 
 void handle_options(shared_ptr<Command> command, int argc, char* argv[])
 {
-  cout << "handle_options" << endl;
-  //TODO separate generic part from hash-object specific part
   int c;
   while (1) {
     struct option* long_options = long_options_();
@@ -76,7 +74,6 @@ void handle_options(shared_ptr<Command> command, int argc, char* argv[])
     string short_options_hash_object = command->getShortOptions();
     c = getopt_long(argc, argv, short_options_hash_object.c_str(), long_options,
         &option_index);
-    cout << "c: " << c << endl;
     /* Detect the end of the options. */
     if (c == -1) {
       break;
