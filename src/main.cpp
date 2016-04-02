@@ -53,9 +53,9 @@ vector<option> long_options_()
 
   // store a lambda
   function<void(string, int, int*, bool)> fill_options =
-      [&](string name, int has_arg, int* flag, int value) {
+      [&furz](string name, int has_arg, int* flag, int value) {
         if (name == "path") {
-          furz.name = name.c_str();
+          furz.name = "path";//name.c_str(); //TODO: string copy into char*
           furz.has_arg = has_arg;
           furz.flag = flag;
           furz.val = value;
@@ -64,7 +64,7 @@ vector<option> long_options_()
           throw -999;
         }
       };
-  fill_options("path", required_argument, 0, 0);
+  fill_options(string("path"), required_argument, 0, 0);
   vector<option> long_options =
         { furz,
             { 0, 0, 0, 0 } };
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
   mygit->setPath("1");
 
   shared_ptr<Command> command = determine_command(mygit, argc, argv);
-  CommandParameter commandParameter = command->createCommandParameter();
+//  CommandParameter commandParameter = command->createCommandParameter();
 
   try {
     // TODO right now this will only check for "hash-object" command. It should check for a collection of commands and decide on the appropriate Command subclass (TODO)
