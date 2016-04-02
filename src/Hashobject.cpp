@@ -13,6 +13,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "HashObjectCommandParameter.h"
+
 using namespace std;
 
 Hash_object::Hash_object(shared_ptr<MyGit> mg) :
@@ -24,7 +26,11 @@ Hash_object::~Hash_object()
 {
   // TODO Auto-generated destructor stub
 }
-
+shared_ptr<CommandParameter> Hash_object::createCommandParameter()
+{
+  shared_ptr<CommandParameter> retVal(new HashObjectCommandParameter());
+  return retVal;
+}
 void Hash_object::execute()
 {
   ifstream myfile;

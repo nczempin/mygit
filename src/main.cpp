@@ -146,6 +146,8 @@ int main(int argc, char* argv[])
   mygit->setPath("1");
 
   shared_ptr<Command> command = determine_command(mygit, argc, argv);
+  CommandParameter commandParameter = command->createCommandParameter();
+
   try {
     // TODO right now this will only check for "hash-object" command. It should check for a collection of commands and decide on the appropriate Command subclass (TODO)
     --argc;
