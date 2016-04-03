@@ -27,6 +27,7 @@ public:
 
   void execute();
   string getShortOptions();
+	struct option getLongOptions(); // TODO dependency on getopt
   void do_long_option(bool flag, string name, string argument);
   void do_short_option(int c, string argument);
   shared_ptr<CommandParameter> createCommandParameter();
