@@ -81,8 +81,7 @@ vector<option> Hash_object::getLongOptions(){
 	vector<option> retval = {
 		{
 			"path", required_argument, 0, 0 
-		},
-		{ 0, 0, 0, 0 }
+		}
 	};
   return retval;
 }

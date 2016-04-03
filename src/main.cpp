@@ -52,13 +52,13 @@ void handle_options(shared_ptr<Command> command, int argc, char* argv[])
 	int c;
 	while (1) {
 		vector<option> long_options1 = command->getLongOptions();//long_options_();
+		long_options1.push_back({0, 0, 0, 0}); // for handling the options
 		option* long_options = &long_options1[0];
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 		string short_options_hash_object = command->getShortOptions();
 		c = getopt_long(argc, argv, short_options_hash_object.c_str(),
-				long_options,
-				&option_index);
+				long_options,	&option_index);
 		/* Detect the end of the options. */
 		if (c == -1) {
 			break;
