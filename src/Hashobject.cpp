@@ -66,11 +66,11 @@ void Hash_object::execute()
 
 void Hash_object::do_long_option(bool flag, string name, string argument)
 {
-  if (flag) {
-    cout << "flag" << endl;
-  }
-  cout << "name: " << name << endl;
-  cout << "argument: " << argument << endl;
+//  if (flag) {
+//    cout << "flag" << endl;
+//  }
+//  cout << "name: " << name << endl;
+//  cout << "argument: " << argument << endl;
 }
 
 string Hash_object::getShortOptions()

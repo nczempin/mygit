@@ -103,9 +103,9 @@ int main(int argc, char* argv[])
 		--argc;
 		++argv;
 		// skip actual command //TODO: extract actual command
-		cout << "before: " << argc << ", " << optind << endl;
+		//cout << "before: " << argc << ", " << optind << endl;
 		handle_options(command, argc, argv);
-		cout << "after: " << argc << ", " << optind << endl;
+		//cout << "after: " << argc << ", " << optind << endl;
 	} catch (const int n) {
 		if (n == 129) { //TODO give this magic number a name
 			print_usage();
@@ -122,13 +122,13 @@ int main(int argc, char* argv[])
 		char* file = argv[optind++];
 		varargs.push_back(file);
 	}
-	if (varargs.size() > 0) {
-		cout << "Files to consider: ";
-		for (const auto& file : varargs) {
-			cout << file << " ";
-		}
-		cout << endl;
-	}
+//	if (varargs.size() > 0) {
+//		cout << "Files to consider: ";
+//		for (const auto& file : varargs) {
+//			cout << file << " ";
+//		}
+//		cout << endl;
+//	}
 
 	// we have our command and its parameter
 
