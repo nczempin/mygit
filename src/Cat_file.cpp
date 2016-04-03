@@ -33,12 +33,17 @@ shared_ptr<CommandParameter> Cat_file::createCommandParameter()
 }
 void Cat_file::execute()
 {
+  // 1. determine .git path
+  // 2. convert sha1 param into path relative from .git
+  // 3. read that file
+  // 4. uncompress it
+  // 5. display it
 
-  cout << "cat cat kittycat" << endl;
-  return;
-  ifstream myfile;
-  //TODO handle multiple files as parameter
+
+   ifstream myfile;
+
   string path = mygit->getPath();
+  cout << "working with: " << path << endl;
   myfile.open(path);
   ostringstream file_contents;
   if (myfile.is_open()) {
@@ -78,17 +83,17 @@ void Cat_file::do_long_option(bool flag, string name, string argument)
 
 string Cat_file::getShortOptions()
 {
-  return "wt:";
+  return "tsep";
 }
 vector<option> Cat_file::getLongOptions()
 {
   vector<option> retval =
-    {
         {
-          "path",
-          required_argument, 0, 0
-        }
-    };
+            {
+              "textconv",
+              no_argument, 0, 0
+            }
+        };
   return retval;
 }
 void Cat_file::do_short_option(int c, string argument)
