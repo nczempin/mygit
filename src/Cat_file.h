@@ -19,11 +19,11 @@
 
 using namespace std;
 
-class Hash_object: public Command
+class Cat_file: public Command
 {
 public:
-  Hash_object(shared_ptr<MyGit> mygit);
-  virtual ~Hash_object();
+  Cat_file(shared_ptr<MyGit> mygit);
+  virtual ~Cat_file();
 
   void execute();
   string getShortOptions();

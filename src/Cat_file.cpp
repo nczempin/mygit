@@ -5,7 +5,7 @@
  *      Author: nczempin
  */
 
-#include "Hashobject.h"
+#include "Cat_file.h"
 
 #include <openssl/sha.h>
 #include <fstream>
@@ -17,21 +17,21 @@
 
 using namespace std;
 
-Hash_object::Hash_object(shared_ptr<MyGit> mg) :
+Cat_file::Cat_file(shared_ptr<MyGit> mg) :
     mygit(mg)
 {
 }
 
-Hash_object::~Hash_object()
+Cat_file::~Cat_file()
 {
   // TODO Auto-generated destructor stub
 }
-shared_ptr<CommandParameter> Hash_object::createCommandParameter()
+shared_ptr<CommandParameter> Cat_file::createCommandParameter()
 {
   shared_ptr<CommandParameter> retVal(new HashObjectCommandParameter());
   return retVal;
 }
-void Hash_object::execute()
+void Cat_file::execute()
 {
   ifstream myfile;
   //TODO handle multiple files as parameter
@@ -64,7 +64,7 @@ void Hash_object::execute()
   cout << endl;
 }
 
-void Hash_object::do_long_option(bool flag, string name, string argument)
+void Cat_file::do_long_option(bool flag, string name, string argument)
 {
   if (flag) {
     cout << "flag" << endl;
@@ -73,11 +73,11 @@ void Hash_object::do_long_option(bool flag, string name, string argument)
   cout << "argument: " << argument << endl;
 }
 
-string Hash_object::getShortOptions()
+string Cat_file::getShortOptions()
 {
   return "wt:";
 }
-vector<option> Hash_object::getLongOptions(){
+vector<option> Cat_file::getLongOptions(){
 	vector<option> retval = {
 		{
 			"path", required_argument, 0, 0 
@@ -85,7 +85,7 @@ vector<option> Hash_object::getLongOptions(){
 	};
   return retval;
 }
-void Hash_object::do_short_option(int c, string argument)
+void Cat_file::do_short_option(int c, string argument)
 {
   switch (c) {
   case 'w':
