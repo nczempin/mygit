@@ -32,46 +32,6 @@ void print_usage()
 	cout << "to read about a specific subcommand or concept." << endl;
 }
 
-
-//TODO: move to command
-vector<option> long_options_()
-{
-
-	//  int stdin_flag = 0;
-	//  int stdin_paths_flag = 0;
-	//  int no_filters_flag = 0;
-	//  static struct option long_options1[] =
-	//        { //              { "stdin", no_argument, &stdin_flag, 1 },
-	//    //              { "stdin-paths", no_argument, &stdin_paths_flag, 1 },
-	//          //              { "no-filters", no_argument, &no_filters_flag, 1 },
-	//          //              { "literally", no_argument, &literally_flag, 1 },
-	//        { "path", required_argument, 0, 0 },
-	//        { 0, 0, 0, 0 } };
-
-	struct option furz;
-
-	// store a lambda
-//	function<void(string, int, int*, bool)> fill_options = options_filler(furz);
-//	fill_options(string("path"), required_argument, 0, 0);
-	vector<option> long_options =
-{ furz,
-	{ 0, 0, 0, 0 } };
-cout << "wurst " << furz.name << endl;
-
-//  function<void()> func = [] (bool required, int &flag, bool flag_state) {
-//    cout << "Hello world" << endl;
-//  };
-//
-//  string name = "path";
-//
-//  //this needs to go inside hash-object command
-//  if (name == "path") {
-//    func(true, literally_flag, false); // now call the function
-//  }
-
-return long_options;
-}
-
 void hopt(shared_ptr<Command> command, int c, int option_index,
 		struct option* long_options)
 {
@@ -91,7 +51,7 @@ void handle_options(shared_ptr<Command> command, int argc, char* argv[])
 {
 	int c;
 	while (1) {
-		vector<option> long_options1 = long_options_();
+		vector<option> long_options1 = command->getLongOptions();//long_options_();
 		option* long_options = &long_options1[0];
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
