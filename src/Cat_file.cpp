@@ -33,6 +33,9 @@ shared_ptr<CommandParameter> Cat_file::createCommandParameter()
 }
 void Cat_file::execute()
 {
+
+  cout << "cat cat kittycat" << endl;
+  return;
   ifstream myfile;
   //TODO handle multiple files as parameter
   string path = mygit->getPath();
@@ -77,12 +80,15 @@ string Cat_file::getShortOptions()
 {
   return "wt:";
 }
-vector<option> Cat_file::getLongOptions(){
-	vector<option> retval = {
-		{
-			"path", required_argument, 0, 0 
-		}
-	};
+vector<option> Cat_file::getLongOptions()
+{
+  vector<option> retval =
+    {
+        {
+          "path",
+          required_argument, 0, 0
+        }
+    };
   return retval;
 }
 void Cat_file::do_short_option(int c, string argument)
