@@ -7,14 +7,16 @@
 
 #include "Cat_file.h"
 
+#include <dirent.h>
+#include <getopt.h>
+#include <stddef.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <cstring>
 #include <fstream>
-#include <iomanip>
 #include <iostream>
 #include <sstream>
-
-#include "HashObjectCommandParameter.h"
+#include <vector>
 
 using namespace std;
 
@@ -26,11 +28,6 @@ Cat_file::Cat_file(shared_ptr<MyGit> mg) :
 Cat_file::~Cat_file()
 {
   // TODO Auto-generated destructor stub
-}
-shared_ptr<CommandParameter> Cat_file::createCommandParameter()
-{
-  shared_ptr<CommandParameter> retVal(new HashObjectCommandParameter());
-  return retVal;
 }
 
 string Cat_file::get_absolute_cwd()
@@ -54,9 +51,25 @@ void Cat_file::execute()
   //    a. determine absolute path of current directory
   string cwd = get_absolute_cwd();
   cout << "cwd: " << cwd << endl;
-
+  const char* name = ".git";
   //    b. recurse up until one directory contains a .git dir (TODO: what to do when inside .git?)
+  int len = strlen(name);
+  DIR *dirp = opendir(".");
+  dirent* dp;
+  bool found = false;
+  while ((dp = readdir(dirp)) != NULL) {
+    cout << "is it " << dp->d_name << endl;
 
+    if (!strcmp(dp->d_name, name)) {
+      found = true;
+      break;
+    }
+  }
+  if (!found) {
+    cout << "Not ";
+  }
+  cout << "found!" << endl;
+  closedir(dirp);
   // 2. convert sha1 param into path relative from .git
   // 3. read that file
   // 4. uncompress it
