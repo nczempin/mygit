@@ -52,7 +52,6 @@ bool Cat_file::find_dir(string name, string dirpath)
   dirent* dp;
   bool found = false;
   while ((dp = readdir(dirp)) != NULL) {
-    cout << "is it " << dp->d_name << endl;
     if (!strcmp(dp->d_name, name.c_str())) {
       found = true;
       break;
@@ -62,22 +61,6 @@ bool Cat_file::find_dir(string name, string dirpath)
   return found;
 }
 
-vector<string> &split(const string &s, char delim, vector<string> &elems)
-{
-  stringstream ss(s);
-  string item;
-  while (getline(ss, item, delim)) {
-    elems.push_back(item);
-  }
-  return elems;
-}
-
-vector<string> split(const string &s, char delim)
-{
-  vector<string> elems;
-  split(s, delim, elems);
-  return elems;
-}
 void Cat_file::execute()
 {
   // 1. determine .git path
@@ -87,7 +70,7 @@ void Cat_file::execute()
   bool done = false;
   string path = get_absolute_path(".");
   while (!found && !done) {
-    cout << "cwd: " << path << endl;
+    //cout << "cwd: " << path << endl;
     //    b. recurse up until one directory contains a .git dir (TODO: what to do when inside .git?)
     //      i. check current directory
     found = find_dir(name, path);
@@ -108,11 +91,16 @@ void Cat_file::execute()
     << "fatal: Not a git repository (or any of the parent directories): .git"
         << endl;
     throw 128;
-  } else {
-    cout << "Proceeding with " << path << endl;
   }
+  path += "/" + name + "/objects";
+  cout << "Proceeding with " << path << endl;
 
 // 2. convert sha1 param into path relative from .git
+  string sha1 = mygit->getPath();
+  cout << "sha1: " << sha1 << endl;
+  string head = sha1.substr(0, 2);
+  string tail = sha1.substr(2);
+  cout << head << "/" << tail << endl;
 // 3. read that file
 // 4. uncompress it
 // 5. display it
