@@ -6,6 +6,7 @@
  */
 
 #include "Cat_file.h"
+#include "zpipe.h"
 
 #include <dirent.h>
 #include <getopt.h>
@@ -93,22 +94,29 @@ void Cat_file::execute()
     throw 128;
   }
   path += "/" + name + "/objects";
-  cout << "Proceeding with " << path << endl;
+  //cout << "Proceeding with " << path << endl;
 
 // 2. convert sha1 param into path relative from .git
   string sha1 = mygit->getPath();
-  cout << "sha1: " << sha1 << endl;
+  //cout << "sha1: " << sha1 << endl;
   string head = sha1.substr(0, 2);
   string tail = sha1.substr(2);
-  cout << head << "/" << tail << endl;
+  //cout << head << "/" << tail << endl;
 // 3. read that file
+   path += "/" + head + "/" + tail;
+
+   cout << "working with: " << path << endl;
+  FILE * pFile;
+  pFile = fopen (path.c_str(),"r");
+  if (pFile!=NULL)
+  {
+  int zerr =  inf(pFile, stdout);
+    fclose (pFile);
+  }
 // 4. uncompress it
 // 5. display it
 
-  ifstream myfile;
-
-//   cout << "working with: " << path << endl;
-//  myfile.open(path);
+  //  
 //  ostringstream file_contents;
 //  if (myfile.is_open()) {
 //    string line;
