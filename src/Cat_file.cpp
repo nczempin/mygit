@@ -30,14 +30,14 @@ Cat_file::~Cat_file()
   // TODO Auto-generated destructor stub
 }
 
-string Cat_file::get_absolute_cwd()
+string Cat_file::get_absolute_path(string path)
 {
   // 1. determine .git path
   //    a. determine absolute path of current directory
   long size = 255;
   char* buf;
   char* ptr;
-  size = pathconf(".", _PC_PATH_MAX);
+  size = pathconf(path.c_str(), _PC_PATH_MAX);
   if ((buf = (char*) (malloc((size_t) (size)))) != NULL) {
     ptr = getcwd(buf, (size_t) (size));
   }
@@ -45,16 +45,15 @@ string Cat_file::get_absolute_cwd()
   return cwd;
 }
 
-bool Cat_file::find_dir(const char* name, const char* dirpath)
+bool Cat_file::find_dir(string name, string dirpath)
 {
-  DIR *dirp = opendir(dirpath);
+  DIR *dirp = opendir(dirpath.c_str());
 
-  int len = strlen(name);
   dirent* dp;
   bool found = false;
   while ((dp = readdir(dirp)) != NULL) {
     cout << "is it " << dp->d_name << endl;
-    if (!strcmp(dp->d_name, name)) {
+    if (!strcmp(dp->d_name, name.c_str())) {
       found = true;
       break;
     }
@@ -63,20 +62,19 @@ bool Cat_file::find_dir(const char* name, const char* dirpath)
   return found;
 }
 
-std::vector<std::string> &split(const std::string &s, char delim,
-    std::vector<std::string> &elems)
+vector<string> &split(const string &s, char delim, vector<string> &elems)
 {
-  std::stringstream ss(s);
-  std::string item;
-  while (std::getline(ss, item, delim)) {
+  stringstream ss(s);
+  string item;
+  while (getline(ss, item, delim)) {
     elems.push_back(item);
   }
   return elems;
 }
 
-std::vector<std::string> split(const std::string &s, char delim)
+vector<string> split(const string &s, char delim)
 {
-  std::vector<std::string> elems;
+  vector<string> elems;
   split(s, delim, elems);
   return elems;
 }
@@ -84,53 +82,63 @@ void Cat_file::execute()
 {
   // 1. determine .git path
   //    a. determine absolute path of current directory
-  string cwd = get_absolute_cwd();
-  cout << "cwd: " << cwd << endl;
-  const char* name = ".git";
-  const char* dirpath = cwd.c_str();
-  //    b. recurse up until one directory contains a .git dir (TODO: what to do when inside .git?)
-  //      i. check current directory
-  bool found = find_dir(name, dirpath);
-  if (!found) {
-    cout << "Not ";
+  string name(".git");
+  bool found = false;
+  bool done = false;
+  string path = get_absolute_path(".");
+  while (!found && !done) {
+    cout << "cwd: " << path << endl;
+    //    b. recurse up until one directory contains a .git dir (TODO: what to do when inside .git?)
+    //      i. check current directory
+    found = find_dir(name, path);
+    if (found) {
+      break;
+    }
+    //        ii. if not found at the top, we are not inside a git workdir
+    size_t pos = path.find_last_of("/"); //TODO platform-specific
+    if (pos == string::npos) {
+      done = true;
+    }
+    path = path.substr(0, pos);
   }
-  cout << "found!" << endl;
-  //        ii. if not found, go up the tree
-  //        iii. if not found at the top, we are not inside a git workdir
-  if (!found) {
+  //        iii. if not found, go up the tree
+
+  if (done) {
     cout
     << "fatal: Not a git repository (or any of the parent directories): .git"
         << endl;
     throw 128;
+  } else {
+    cout << "Proceeding with " << path << endl;
   }
-  // 2. convert sha1 param into path relative from .git
-  // 3. read that file
-  // 4. uncompress it
-  // 5. display it
+
+// 2. convert sha1 param into path relative from .git
+// 3. read that file
+// 4. uncompress it
+// 5. display it
 
   ifstream myfile;
 
-  string path = mygit->getPath();
-  cout << "working with: " << path << endl;
-  myfile.open(path);
-  ostringstream file_contents;
-  if (myfile.is_open()) {
-    string line;
-    //TODO use proper buffering, especially for large files
-    while (getline(myfile, line)) {
-      file_contents << line << '\n';
-    }
-    myfile.close();
-  } else {
-    throw 128;
-  }
-  string file_string = file_contents.str();
-  // Add the git specific text, "blob " plus size of the original blob (file)
-  string blobTxt = "blob " + to_string(file_string.size());
-  string combined = blobTxt + '\0' + file_string;
-  const char* str = combined.c_str();
-  int l = combined.length();
-  // convert to sha1
+//   cout << "working with: " << path << endl;
+//  myfile.open(path);
+//  ostringstream file_contents;
+//  if (myfile.is_open()) {
+//    string line;
+//    //TODO use proper buffering, especially for large files
+//    while (getline(myfile, line)) {
+//      file_contents << line << '\n';
+//    }
+//    myfile.close();
+//  } else {
+//    throw 128;
+//  }
+//  string file_string = file_contents.str();
+//  // Add the git specific text, "blob " plus size of the original blob (file)
+//  string blobTxt = "blob " + to_string(file_string.size());
+//  string combined = blobTxt + '\0' + file_string;
+//  const char* str = combined.c_str();
+//  int l = combined.length();
+//  // convert to sha1
 
 }
 

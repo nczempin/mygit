@@ -35,8 +35,8 @@ public:
 private:
   shared_ptr<MyGit> mygit;
 
-  string get_absolute_cwd();
-  bool find_dir(const char* name, const char* dirpath);
+  string get_absolute_path(string path);
+  bool find_dir(string name, string dirpath);
 };
 
 #endif /* CAT_FILE_H_ */
