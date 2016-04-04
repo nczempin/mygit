@@ -65,7 +65,7 @@ bool Cat_file::find_dir(string name, string dirpath)
 
 void Cat_file::uncompress(const string& path)
 {
-	
+
 	FILE* pFile;
 	pFile = fopen(path.c_str(), "r");
 	if (pFile == NULL) {
@@ -119,9 +119,13 @@ void Cat_file::execute()
 	// 2. convert sha1 param into path relative from .git
 	vector<string> varargs = mygit->getPath();
 	//TODO obviously not a path
-	string sha1 = varargs[2];
-	
-	cout << "sha1: " << sha1 << endl;
+	if (varargs[0] != "blob"){
+		throw 3; //TODO handle properly 
+	}
+
+	string sha1 = varargs[1]; //TODO assumption
+
+	//cout << "sha1: " << sha1 << endl;
 
 	string head = sha1.substr(0, 2);
 	string tail = sha1.substr(2);

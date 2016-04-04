@@ -142,6 +142,7 @@ int main(int argc, char* argv[])
     char* file = argv[optind++];
     varargs.push_back(file);
   }
+	/*
 	if (varargs.size() > 0) {
 		cout << "Files to consider: ";
 		for (const auto& file : varargs) {
@@ -149,7 +150,7 @@ int main(int argc, char* argv[])
 		}
 		cout << endl;
 	}
-
+*/
   // we have our command and its parameter
 
   // now read the file contents
