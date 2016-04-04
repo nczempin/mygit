@@ -34,6 +34,8 @@ public:
 
 private:
   shared_ptr<MyGit> mygit;
+
+  string get_absolute_cwd();
 };
 
 #endif /* CAT_FILE_H_ */

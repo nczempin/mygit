@@ -7,7 +7,8 @@
 
 #include "Cat_file.h"
 
-#include <openssl/sha.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -31,16 +32,37 @@ shared_ptr<CommandParameter> Cat_file::createCommandParameter()
   shared_ptr<CommandParameter> retVal(new HashObjectCommandParameter());
   return retVal;
 }
+
+string Cat_file::get_absolute_cwd()
+{
+  // 1. determine .git path
+  //    a. determine absolute path of current directory
+  long size = 255;
+  char* buf;
+  char* ptr;
+  size = pathconf(".", _PC_PATH_MAX);
+  if ((buf = (char*) (malloc((size_t) (size)))) != NULL) {
+    ptr = getcwd(buf, (size_t) (size));
+  }
+  string cwd(ptr);
+  return cwd;
+}
+
 void Cat_file::execute()
 {
   // 1. determine .git path
+  //    a. determine absolute path of current directory
+  string cwd = get_absolute_cwd();
+  cout << "cwd: " << cwd << endl;
+
+  //    b. recurse up until one directory contains a .git dir (TODO: what to do when inside .git?)
+
   // 2. convert sha1 param into path relative from .git
   // 3. read that file
   // 4. uncompress it
   // 5. display it
 
-
-   ifstream myfile;
+  ifstream myfile;
 
   string path = mygit->getPath();
   cout << "working with: " << path << endl;
@@ -63,13 +85,7 @@ void Cat_file::execute()
   const char* str = combined.c_str();
   int l = combined.length();
   // convert to sha1
-  unsigned char hash[SHA_DIGEST_LENGTH];
-  SHA1((const unsigned char*) (str), l, hash);
-  // convert to 2 hex nibbles per byte and output.
-  for (auto& n : hash) {
-    cout << hex << setfill('0') << setw(2) << (unsigned int) (n);
-  }
-  cout << endl;
+
 }
 
 void Cat_file::do_long_option(bool flag, string name, string argument)
