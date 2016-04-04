@@ -110,7 +110,7 @@ shared_ptr<Command> determine_command(shared_ptr<MyGit> mygit, int argc,
 int main(int argc, char* argv[])
 {
   shared_ptr<MyGit> mygit(new MyGit());
-  mygit->setPath("1");
+  //mygit->setPath("1");
   shared_ptr<Command> command;
   try {
 
@@ -142,21 +142,21 @@ int main(int argc, char* argv[])
     char* file = argv[optind++];
     varargs.push_back(file);
   }
-//	if (varargs.size() > 0) {
-//		cout << "Files to consider: ";
-//		for (const auto& file : varargs) {
-//			cout << file << " ";
-//		}
-//		cout << endl;
-//	}
+	if (varargs.size() > 0) {
+		cout << "Files to consider: ";
+		for (const auto& file : varargs) {
+			cout << file << " ";
+		}
+		cout << endl;
+	}
 
   // we have our command and its parameter
 
   // now read the file contents
   // TODO set parameters / handle options
-  for (string path : varargs) {
+  //for (string path : varargs) {
     try {
-      mygit->setPath(path);
+      mygit->setPath(varargs);
       command->execute();
     } catch (int n) {
 //      cout << n << endl;
@@ -165,6 +165,6 @@ int main(int argc, char* argv[])
 //          << endl;
       return n; //TODO more sophisticated exception handling
     }
-  }
+  //}
   return 0;
 }

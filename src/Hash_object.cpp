@@ -35,7 +35,8 @@ void Hash_object::execute()
 {
   ifstream myfile;
   //TODO handle multiple files as parameter
-  string path = mygit->getPath();
+  vector<string> varargs = mygit->getPath();
+	string path = varargs[0]; //TODO assumption
   myfile.open(path);
   ostringstream file_contents;
   if (myfile.is_open()) {
