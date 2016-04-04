@@ -159,9 +159,10 @@ int main(int argc, char* argv[])
       mygit->setPath(path);
       command->execute();
     } catch (int n) {
-      cout << "fatal: Cannot open '" << path
-          << "': No such file or directory"
-          << endl;
+//      cout << n << endl;
+//      cout << "fatal: Cannot open '" << path
+//          << "': No such file or directory"
+//          << endl;
       return n; //TODO more sophisticated exception handling
     }
   }

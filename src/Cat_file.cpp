@@ -45,6 +45,41 @@ string Cat_file::get_absolute_cwd()
   return cwd;
 }
 
+bool Cat_file::find_dir(const char* name, const char* dirpath)
+{
+  DIR *dirp = opendir(dirpath);
+
+  int len = strlen(name);
+  dirent* dp;
+  bool found = false;
+  while ((dp = readdir(dirp)) != NULL) {
+    cout << "is it " << dp->d_name << endl;
+    if (!strcmp(dp->d_name, name)) {
+      found = true;
+      break;
+    }
+  }
+  closedir(dirp);
+  return found;
+}
+
+std::vector<std::string> &split(const std::string &s, char delim,
+    std::vector<std::string> &elems)
+{
+  std::stringstream ss(s);
+  std::string item;
+  while (std::getline(ss, item, delim)) {
+    elems.push_back(item);
+  }
+  return elems;
+}
+
+std::vector<std::string> split(const std::string &s, char delim)
+{
+  std::vector<std::string> elems;
+  split(s, delim, elems);
+  return elems;
+}
 void Cat_file::execute()
 {
   // 1. determine .git path
@@ -52,24 +87,22 @@ void Cat_file::execute()
   string cwd = get_absolute_cwd();
   cout << "cwd: " << cwd << endl;
   const char* name = ".git";
+  const char* dirpath = cwd.c_str();
   //    b. recurse up until one directory contains a .git dir (TODO: what to do when inside .git?)
-  int len = strlen(name);
-  DIR *dirp = opendir(".");
-  dirent* dp;
-  bool found = false;
-  while ((dp = readdir(dirp)) != NULL) {
-    cout << "is it " << dp->d_name << endl;
-
-    if (!strcmp(dp->d_name, name)) {
-      found = true;
-      break;
-    }
-  }
+  //      i. check current directory
+  bool found = find_dir(name, dirpath);
   if (!found) {
     cout << "Not ";
   }
   cout << "found!" << endl;
-  closedir(dirp);
+  //        ii. if not found, go up the tree
+  //        iii. if not found at the top, we are not inside a git workdir
+  if (!found) {
+    cout
+    << "fatal: Not a git repository (or any of the parent directories): .git"
+        << endl;
+    throw 128;
+  }
   // 2. convert sha1 param into path relative from .git
   // 3. read that file
   // 4. uncompress it
