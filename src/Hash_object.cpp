@@ -5,7 +5,7 @@
  *      Author: nczempin
  */
 
-#include "Hashobject.h"
+#include "Hash_object.h"
 
 #include <openssl/sha.h>
 #include <fstream>

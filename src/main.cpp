@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "Cat_file.h"
-#include "Hashobject.h"
+#include "Hash_object.h"
 #include "MyGit.h"
 
 using namespace std;
