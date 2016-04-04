@@ -123,7 +123,7 @@ void Cat_file::execute()
 // 3. read that file
   path += "/" + head + "/" + tail;
 
-  cout << "working with: " << path << endl;
+  //cout << "working with: " << path << endl;
   uncompress(path);
 // 4. uncompress it
 // 5. display it

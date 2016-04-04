@@ -30,7 +30,7 @@ using namespace std;
 #  define SET_BINARY_MODE(file)
 #endif
 
-#define CHUNK 512
+#define CHUNK 16384
 
 /* Compress from file source to file dest until EOF on source.
  def() returns Z_OK on success, Z_MEM_ERROR if memory could not be
@@ -144,14 +144,15 @@ int inf(FILE *source, FILE *dest)
       }
       int skip = 0;
       if (!skipped) {
+        //TODO at this point the file type would be determined, from the header. For now we only use blob
         string header((const char*) out);
-        cout << "Header: " << header << endl;
+        //cout << "Header: " << header << endl;
         skip = header.length() + 1;
 
         skipped = true;
       }
-      string buf((const char *)(out + skip));
-      cout << buf.substr(0, have);
+      string buf((const char *) (out + skip));
+      cout << buf.substr(0, have - skip);
       //TODO this will only work up to CHUNK bytes per file
 
 //            //write to target, C-Style
@@ -159,7 +160,7 @@ int inf(FILE *source, FILE *dest)
 //                (void)inflateEnd(&strm);
 //                return Z_ERRNO;
 //            }
-     } while (strm.avail_out == 0);
+    } while (strm.avail_out == 0);
     /* done when inflate() says it's done */
   } while (ret != Z_STREAM_END);
 
