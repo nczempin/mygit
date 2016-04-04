@@ -37,6 +37,7 @@ private:
 
   string get_absolute_path(string path);
   bool find_dir(string name, string dirpath);
+  void uncompress(const string& path);
 };
 
 #endif /* CAT_FILE_H_ */

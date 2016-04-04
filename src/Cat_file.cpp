@@ -7,6 +7,7 @@
 
 #include "Cat_file.h"
 #include "zpipe.h"
+#include "zlib.h"
 
 #include <dirent.h>
 #include <getopt.h>
@@ -62,6 +63,23 @@ bool Cat_file::find_dir(string name, string dirpath)
   return found;
 }
 
+void Cat_file::uncompress(const string& path)
+{
+  FILE* pFile;
+  pFile = fopen(path.c_str(), "r");
+  if (pFile == NULL) {
+    cout << "error1" << endl;
+    throw 1; //TODO
+  } else {
+    int zerr = inf(pFile, stdout);
+    fclose(pFile);
+    if (zerr != Z_OK) {
+      cout << "error2" << endl;
+      throw 2; //TODO
+    }
+  }
+}
+
 void Cat_file::execute()
 {
   // 1. determine .git path
@@ -97,22 +115,16 @@ void Cat_file::execute()
   //cout << "Proceeding with " << path << endl;
 
 // 2. convert sha1 param into path relative from .git
-  string sha1 = mygit->getPath();
+  string sha1 = mygit->getPath(); //TODO obviously not a path
   //cout << "sha1: " << sha1 << endl;
   string head = sha1.substr(0, 2);
   string tail = sha1.substr(2);
   //cout << head << "/" << tail << endl;
 // 3. read that file
-   path += "/" + head + "/" + tail;
+  path += "/" + head + "/" + tail;
 
-   cout << "working with: " << path << endl;
-  FILE * pFile;
-  pFile = fopen (path.c_str(),"r");
-  if (pFile!=NULL)
-  {
-  int zerr =  inf(pFile, stdout);
-    fclose (pFile);
-  }
+  cout << "working with: " << path << endl;
+  uncompress(path);
 // 4. uncompress it
 // 5. display it
 
