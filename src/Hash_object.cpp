@@ -5,7 +5,7 @@
  *      Author: nczempin
  */
 
-#include "Hashobject.h"
+#include "Hash_object.h"
 
 #include <openssl/sha.h>
 #include <fstream>
@@ -35,7 +35,8 @@ void Hash_object::execute()
 {
   ifstream myfile;
   //TODO handle multiple files as parameter
-  string path = mygit->getPath();
+  vector<string> varargs = mygit->getPath();
+	string path = varargs[0]; //TODO assumption
   myfile.open(path);
   ostringstream file_contents;
   if (myfile.is_open()) {
@@ -46,6 +47,8 @@ void Hash_object::execute()
     }
     myfile.close();
   } else {
+    cout << "fatal: Cannot open '" << path << "': No such file or directory"
+        << endl;
     throw 128;
   }
   string file_string = file_contents.str();
@@ -77,12 +80,15 @@ string Hash_object::getShortOptions()
 {
   return "wt:";
 }
-vector<option> Hash_object::getLongOptions(){
-	vector<option> retval = {
-		{
-			"path", required_argument, 0, 0 
-		}
-	};
+vector<option> Hash_object::getLongOptions()
+{
+  vector<option> retval =
+        {
+            {
+              "path",
+              required_argument, 0, 0
+            }
+        };
   return retval;
 }
 void Hash_object::do_short_option(int c, string argument)
