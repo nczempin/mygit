@@ -72,7 +72,12 @@ void Cat_file::uncompress(const string& path)
 		cout << "error1" << endl;
 		throw 1; //TODO
 	} else {
-		int zerr = inf(pFile, stdout);
+		int zerr;
+		if (option_type){
+			zerr = inf_header(pFile, stdout);
+		} else {
+			zerr = inf(pFile, stdout);
+		}
 		fclose(pFile);
 		if (zerr != Z_OK) {
 			cout << "error2" << endl;
@@ -119,11 +124,12 @@ void Cat_file::execute()
 	// 2. convert sha1 param into path relative from .git
 	vector<string> varargs = mygit->getPath();
 	//TODO obviously not a path
-	if (varargs[0] != "blob"){
+	if (!option_type && varargs[0] != "blob"){
 		throw 3; //TODO handle properly 
 	}
 
-	string sha1 = varargs[1]; //TODO assumption
+	string sha1 = option_type? varargs[0]:varargs[1]; //TODO assumption
+	
 
 	//cout << "sha1: " << sha1 << endl;
 
