@@ -135,28 +135,6 @@ void Cat_file::execute()
 
 	//cout << "working with: " << path << endl;
 	uncompress(path);
-	// 4. uncompress it
-	// 5. display it
-
-	//  
-	//  ostringstream file_contents;
-	//  if (myfile.is_open()) {
-	//    string line;
-	//    //TODO use proper buffering, especially for large files
-	//    while (getline(myfile, line)) {
-	//      file_contents << line << '\n';
-	//    }
-	//    myfile.close();
-	//  } else {
-	//    throw 128;
-	//  }
-	//  string file_string = file_contents.str();
-	//  // Add the git specific text, "blob " plus size of the original blob (file)
-	//  string blobTxt = "blob " + to_string(file_string.size());
-	//  string combined = blobTxt + '\0' + file_string;
-	//  const char* str = combined.c_str();
-	//  int l = combined.length();
-	//  // convert to sha1
 
 }
 
@@ -171,7 +149,7 @@ void Cat_file::do_long_option(bool flag, string name, string argument)
 
 string Cat_file::getShortOptions()
 {
-	return "tsep";
+	return "t";
 }
 vector<option> Cat_file::getLongOptions()
 {
@@ -184,6 +162,11 @@ vector<option> Cat_file::getLongOptions()
 	};
 	return retval;
 }
+void Cat_file::set_option_type(bool option_type)
+{
+	option_type = option_type;
+}
+
 void Cat_file::do_short_option(int c, string argument)
 {
 	switch (c) {
@@ -191,7 +174,8 @@ void Cat_file::do_short_option(int c, string argument)
 			cout << "option -w" << endl;
 			break;
 		case 't':
-			cout << "option -t with value `" << argument << "'\n" << endl;
+			cout << "option -t" << endl;
+			set_option_type(true);
 			break;
 		case '?':
 			/* getopt_long already printed an error message. */
