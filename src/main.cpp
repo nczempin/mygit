@@ -26,7 +26,7 @@ void print_usage()
   cout << "[TODO]" << endl;
   cout << endl;
   cout
-  << "'mygit help -a' and 'mygit help -g' list available subcommands and some"
+      << "'mygit help -a' and 'mygit help -g' list available subcommands and some"
       << endl;
   cout << "concept guides. See 'mygit help <command>' or 'mygit help <concept>'"
       << endl;
@@ -54,13 +54,13 @@ void handle_options(shared_ptr<Command> command, int argc, char* argv[])
   while (1) {
     vector<option> long_options1 = command->getLongOptions(); //long_options_();
     long_options1.push_back(
-          { 0, 0, 0, 0 }); // for handling the options
+      { 0, 0, 0, 0 }); // for handling the options
     option* long_options = &long_options1[0];
     /* getopt_long stores the option index here. */
     int option_index = 0;
     string short_options_hash_object = command->getShortOptions();
-    c = getopt_long(argc, argv, short_options_hash_object.c_str(),
-        long_options, &option_index);
+    c = getopt_long(argc, argv, short_options_hash_object.c_str(), long_options,
+        &option_index);
     /* Detect the end of the options. */
     if (c == -1) {
       break;
@@ -78,7 +78,7 @@ shared_ptr<Command> determine_command(shared_ptr<MyGit> mygit, int argc,
   }
   string searching_for(argv[1]);
   vector<string> commands =
-        { "hash-object", "cat-file" };
+    { "hash-object", "cat-file" };
   auto it = find(begin(commands), end(commands), searching_for);
   if (it == end(commands)) {
     cout << "mygit: '" << argv[1]
@@ -142,30 +142,29 @@ int main(int argc, char* argv[])
     char* file = argv[optind++];
     varargs.push_back(file);
   }
-	/*
-	if (varargs.size() > 0) {
-		cout << "Files to consider: ";
-		for (const auto& file : varargs) {
-			cout << file << " ";
-		}
-		cout << endl;
-	}
-*/
+  /*
+   if (varargs.size() > 0) {
+   cout << "Files to consider: ";
+   for (const auto& file : varargs) {
+   cout << file << " ";
+   }
+   cout << endl;
+   }
+   */
   // we have our command and its parameter
-
   // now read the file contents
   // TODO set parameters / handle options
   //for (string path : varargs) {
-    try {
-      mygit->setPath(varargs);
-      command->execute();
-    } catch (int n) {
+  try {
+    mygit->setPath(varargs);
+    command->execute();
+  } catch (int n) {
 //      cout << n << endl;
 //      cout << "fatal: Cannot open '" << path
 //          << "': No such file or directory"
 //          << endl;
-      return n; //TODO more sophisticated exception handling
-    }
+    return n; //TODO more sophisticated exception handling
+  }
   //}
   return 0;
 }

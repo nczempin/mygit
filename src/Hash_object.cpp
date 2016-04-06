@@ -36,7 +36,7 @@ void Hash_object::execute()
   ifstream myfile;
   //TODO handle multiple files as parameter
   vector<string> varargs = mygit->getPath();
-	string path = varargs[0]; //TODO assumption
+  string path = varargs[0]; //TODO assumption
   myfile.open(path);
   ostringstream file_contents;
   if (myfile.is_open()) {
@@ -83,12 +83,10 @@ string Hash_object::getShortOptions()
 vector<option> Hash_object::getLongOptions()
 {
   vector<option> retval =
-        {
-            {
-              "path",
-              required_argument, 0, 0
-            }
-        };
+    {
+      { "path",
+      required_argument,
+        0, 0 } };
   return retval;
 }
 void Hash_object::do_short_option(int c, string argument)
