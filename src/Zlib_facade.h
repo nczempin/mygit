@@ -19,7 +19,13 @@ public:
   Zlib_facade();
   virtual ~Zlib_facade();
 
-  static stringstream uncompress(const string& path);
+  static stringstream uncompress(const string& path, bool option_type);
+
+private:
+  static stringstream inf(FILE *source);
+  static stringstream inf_header(FILE *source);
+  void zerr(int ret);
+  int def(FILE *source, FILE *dest, int level);
 };
 
 #endif /* ZLIB_FACADE_H_ */

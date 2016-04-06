@@ -66,12 +66,8 @@ bool Cat_file::find_dir(string name, string dirpath)
 
 stringstream Cat_file::uncompress(const string& path)
 {
-
-  stringstream buffer = Zlib_facade::uncompress(path);
-
-
+  stringstream buffer = Zlib_facade::uncompress(path, option_type);
   return buffer;
-
 }
 
 void Cat_file::execute()
@@ -118,7 +114,7 @@ void Cat_file::execute()
 
   string sha1 = option_type ? varargs[0] : varargs[1]; //TODO assumption
 
-  cout << "sha1: " << sha1 << endl;
+  //cout << "sha1: " << sha1 << endl;
 
   string head = sha1.substr(0, 2);
   string tail = sha1.substr(2);
@@ -126,9 +122,9 @@ void Cat_file::execute()
   // 3. read that file
   path += "/" + head + "/" + tail;
 
-  cout << "working with: " << path << endl;
+  //cout << "working with: " << path << endl;
   stringstream result = uncompress(path);
-  cout << result.str() << endl;
+  cout << result.str();
 }
 
 void Cat_file::do_long_option(bool flag, string name, string argument)
