@@ -7,7 +7,7 @@
 
 #include "MyGit.h"
 
-MyGit::MyGit():path("")
+MyGit::MyGit():path()
 {
 }
 

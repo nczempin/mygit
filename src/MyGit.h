@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 class MyGit
@@ -17,16 +18,16 @@ class MyGit
 public:
   MyGit();
   virtual ~MyGit();
-  void setPath(string p)
+  void setPath(vector<string> p)
   {
     path = p;
   }
-  string getPath()
+  vector<string> getPath()
   {
     return path;
   }
 private:
-  string path;
+  vector<string> path;
 };
 
 #endif /* MYGIT_H_ */
