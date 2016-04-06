@@ -6,19 +6,20 @@
  */
 
 #include "Cat_file.h"
-
-//TODO move these C dependencies elsewhere
-#include <dirent.h>
-#include <getopt.h>
-#include <cstddef>
-#include <cstdlib>
-#include <unistd.h>
-
-#include <cstring>
-#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <vector>
+
+
+//TODO Factor out these C libraries
+#include <dirent.h>
+#include <getopt.h>
+#include <unistd.h>
+
+#include <cstring>
+
+
+#include "Zlib_facade.h"
 
 using namespace std;
 
@@ -54,7 +55,7 @@ bool Cat_file::find_dir(string name, string dirpath)
   dirent* dp;
   bool found = false;
   while ((dp = readdir(dirp)) != NULL) {
-    if (!strcmp(dp->d_name, name.c_str())) {
+    if (!strcmp(dp->d_name, name.c_str())) { //TODO strcmp is C, not C++
       found = true;
       break;
     }
@@ -65,27 +66,10 @@ bool Cat_file::find_dir(string name, string dirpath)
 
 stringstream Cat_file::uncompress(const string& path)
 {
-  stringstream buffer;
 
-//  FILE* pFile;
-//  pFile = fopen(path.c_str(), "r");
-//  if (pFile == NULL) {
-//    cout << "error1" << endl;
-//    throw 1; //TODO
-//  } else {
-//    int zerr;
-//    if (option_type) {
-//      zerr = inf_header(pFile, stdout);
-//    } else {
-//      zerr = inf(pFile, stdout);
-//    }
-//    fclose(pFile);
-//    if (zerr != Z_OK) {
-//      cout << "error2" << endl;
-//      throw 2; //TODO
-//    }
-//  }
-  buffer << "hello";
+  stringstream buffer = Zlib_facade::uncompress(path);
+
+
   return buffer;
 
 }
