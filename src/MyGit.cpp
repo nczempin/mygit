@@ -13,6 +13,6 @@ MyGit::MyGit():path()
 
 MyGit::~MyGit()
 {
-  // TODO Auto-generated destructor stub
+    // TODO Auto-generated destructor stub
 }
 
