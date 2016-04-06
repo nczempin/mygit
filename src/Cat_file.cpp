@@ -6,14 +6,14 @@
  */
 
 #include "Cat_file.h"
-#include "zpipe.h"
-#include "zlib.h"
 
+//TODO move these C dependencies elsewhere
 #include <dirent.h>
 #include <getopt.h>
-#include <stddef.h>
-#include <stdlib.h>
+#include <cstddef>
+#include <cstdlib>
 #include <unistd.h>
+
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -63,27 +63,31 @@ bool Cat_file::find_dir(string name, string dirpath)
   return found;
 }
 
-void Cat_file::uncompress(const string& path)
+stringstream Cat_file::uncompress(const string& path)
 {
+  stringstream buffer;
 
-  FILE* pFile;
-  pFile = fopen(path.c_str(), "r");
-  if (pFile == NULL) {
-    cout << "error1" << endl;
-    throw 1; //TODO
-  } else {
-    int zerr;
-    if (option_type) {
-      zerr = inf_header(pFile, stdout);
-    } else {
-      zerr = inf(pFile, stdout);
-    }
-    fclose(pFile);
-    if (zerr != Z_OK) {
-      cout << "error2" << endl;
-      throw 2; //TODO
-    }
-  }
+//  FILE* pFile;
+//  pFile = fopen(path.c_str(), "r");
+//  if (pFile == NULL) {
+//    cout << "error1" << endl;
+//    throw 1; //TODO
+//  } else {
+//    int zerr;
+//    if (option_type) {
+//      zerr = inf_header(pFile, stdout);
+//    } else {
+//      zerr = inf(pFile, stdout);
+//    }
+//    fclose(pFile);
+//    if (zerr != Z_OK) {
+//      cout << "error2" << endl;
+//      throw 2; //TODO
+//    }
+//  }
+  buffer << "hello";
+  return buffer;
+
 }
 
 void Cat_file::execute()
@@ -130,7 +134,7 @@ void Cat_file::execute()
 
   string sha1 = option_type ? varargs[0] : varargs[1]; //TODO assumption
 
-  //cout << "sha1: " << sha1 << endl;
+  cout << "sha1: " << sha1 << endl;
 
   string head = sha1.substr(0, 2);
   string tail = sha1.substr(2);
@@ -138,9 +142,9 @@ void Cat_file::execute()
   // 3. read that file
   path += "/" + head + "/" + tail;
 
-  //cout << "working with: " << path << endl;
-  uncompress(path);
-
+  cout << "working with: " << path << endl;
+  stringstream result = uncompress(path);
+  cout << result.str() << endl;
 }
 
 void Cat_file::do_long_option(bool flag, string name, string argument)

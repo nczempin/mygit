@@ -12,9 +12,9 @@
  Avoid some compiler warnings for input and output buffers
  */
 
-#include <assert.h>
-#include <stdio.h>
-#include <string.h>
+#include <cassert>
+#include <cstdio>
+#include <cstring>
 #include <zlib.h>
 #include <string>
 #include <iostream>
