@@ -59,8 +59,7 @@ stringstream Zlib_facade::uncompress(const string& path, bool option_type)
     cout << "error1" << endl;
     throw 1; //TODO
   } else {
-    int zerr;
-    try {
+     try {
       if (option_type) {
         retVal = Zlib_facade::inf_header(pFile);
       } else {
