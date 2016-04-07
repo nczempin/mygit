@@ -37,7 +37,7 @@ private:
 
   string get_absolute_path(string path);
   bool find_dir(string name, string dirpath);
-  void uncompress(const string& path);
+  stringstream uncompress(const string& path);
 
 	void set_option_type(bool option_type);
 

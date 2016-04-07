@@ -6,19 +6,20 @@
  */
 
 #include "Cat_file.h"
-#include "zpipe.h"
-#include "zlib.h"
-
-#include <dirent.h>
-#include <getopt.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <cstring>
-#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <vector>
+
+
+//TODO Factor out these C libraries
+#include <dirent.h>
+#include <getopt.h>
+#include <unistd.h>
+
+#include <cstring>
+
+
+#include "Zlib_facade.h"
 
 using namespace std;
 
@@ -54,7 +55,7 @@ bool Cat_file::find_dir(string name, string dirpath)
   dirent* dp;
   bool found = false;
   while ((dp = readdir(dirp)) != NULL) {
-    if (!strcmp(dp->d_name, name.c_str())) {
+    if (!strcmp(dp->d_name, name.c_str())) { //TODO strcmp is C, not C++
       found = true;
       break;
     }
@@ -63,27 +64,10 @@ bool Cat_file::find_dir(string name, string dirpath)
   return found;
 }
 
-void Cat_file::uncompress(const string& path)
+stringstream Cat_file::uncompress(const string& path)
 {
-
-  FILE* pFile;
-  pFile = fopen(path.c_str(), "r");
-  if (pFile == NULL) {
-    cout << "error1" << endl;
-    throw 1; //TODO
-  } else {
-    int zerr;
-    if (option_type) {
-      zerr = inf_header(pFile, stdout);
-    } else {
-      zerr = inf(pFile, stdout);
-    }
-    fclose(pFile);
-    if (zerr != Z_OK) {
-      cout << "error2" << endl;
-      throw 2; //TODO
-    }
-  }
+  stringstream buffer = Zlib_facade::uncompress(path, option_type);
+  return buffer;
 }
 
 void Cat_file::execute()
@@ -139,8 +123,8 @@ void Cat_file::execute()
   path += "/" + head + "/" + tail;
 
   //cout << "working with: " << path << endl;
-  uncompress(path);
-
+  stringstream result = uncompress(path);
+  cout << result.str();
 }
 
 void Cat_file::do_long_option(bool flag, string name, string argument)

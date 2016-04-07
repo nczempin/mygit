@@ -1,3 +1,9 @@
+/*
+ * Zlib_facade.cpp
+ *
+ *  Created on: Apr 6, 2016
+ *      Author: nczempin
+ */
 /* zpipe.c: example of proper use of zlib's inflate() and deflate()
  Not copyrighted -- provided to the public domain
  Version 1.4  11 December 2005  Mark Adler */
@@ -11,10 +17,11 @@
  1.4  11 Dec 2005  Add hack to avoid MSDOS end-of-line conversions
  Avoid some compiler warnings for input and output buffers
  */
+#include "Zlib_facade.h"
 
-#include <assert.h>
-#include <stdio.h>
-#include <string.h>
+#include <cassert>
+#include <cstdio>
+#include <cstring>
 #include <zlib.h>
 #include <string>
 #include <iostream>
@@ -32,13 +39,50 @@ using namespace std;
 
 #define CHUNK 16384
 
+Zlib_facade::Zlib_facade()
+{
+  // TODO Auto-generated constructor stub
+
+}
+
+Zlib_facade::~Zlib_facade()
+{
+  // TODO Auto-generated destructor stub
+}
+
+stringstream Zlib_facade::uncompress(const string& path, bool option_type)
+{
+  stringstream retVal;
+  FILE* pFile;
+  pFile = fopen(path.c_str(), "r");
+  if (pFile == NULL) {
+    cout << "error1" << endl;
+    throw 1; //TODO
+  } else {
+     try {
+      if (option_type) {
+        retVal = Zlib_facade::inf_header(pFile);
+      } else {
+        retVal = Zlib_facade::inf(pFile);
+      }
+      fclose(pFile);
+    } catch (int zerr) {
+      if (zerr != Z_OK) {
+        cout << "error2" << endl;
+        throw 2; //TODO
+      }
+    }
+  }
+  return retVal;
+}
+
 /* Compress from file source to file dest until EOF on source.
  def() returns Z_OK on success, Z_MEM_ERROR if memory could not be
  allocated for processing, Z_STREAM_ERROR if an invalid compression
  level is supplied, Z_VERSION_ERROR if the version of zlib.h and the
  version of the library linked do not match, or Z_ERRNO if there is
  an error reading or writing the files. */
-int def(FILE *source, FILE *dest, int level)
+int Zlib_facade::def(FILE *source, FILE *dest, int level)
 {
   int ret, flush;
   unsigned have;
@@ -89,8 +133,9 @@ int def(FILE *source, FILE *dest, int level)
   return Z_OK;
 }
 
-int inf_header(FILE *source, FILE *dest)
+stringstream Zlib_facade::inf_header(FILE *source)
 {
+  stringstream retVal;
   //TODO: properly remove code duplication between this and the regular inf()
   int ret;
   unsigned have;
@@ -106,7 +151,7 @@ int inf_header(FILE *source, FILE *dest)
   strm.next_in = Z_NULL;
   ret = inflateInit(&strm);
   if (ret != Z_OK) {
-    return ret;
+    throw ret;
   }
   bool skipped = false;
   /* decompress until deflate stream ends or end of
@@ -115,7 +160,7 @@ int inf_header(FILE *source, FILE *dest)
     strm.avail_in = fread(in, 1, CHUNK, source);
     if (ferror(source)) {
       (void) inflateEnd(&strm);
-      return Z_ERRNO;
+      throw Z_ERRNO;
     }
     if (strm.avail_in == 0) {
       break;
@@ -142,7 +187,7 @@ int inf_header(FILE *source, FILE *dest)
       case Z_DATA_ERROR:
       case Z_MEM_ERROR:
         (void) inflateEnd(&strm);
-        return ret;
+        throw ret;
       }
       have = CHUNK - strm.avail_out;
       int skip = 0;
@@ -168,14 +213,10 @@ int inf_header(FILE *source, FILE *dest)
         //use
         //blob
         string header((const char*) out);
-        cout << header.substr(0, header.find(" ")) << endl;
-        return 0;
-        skip = header.length() + 1;
-
-        skipped = true;
+        retVal << header.substr(0, header.find(" ")) << endl;
+        return retVal;
       }
-      string buf((const
-      char *) (out + skip));
+      string buf((const char *) (out + skip));
       cout << buf.substr(0, have - skip);
     } while (strm.avail_out == 0);
     /* done when inflate() says it's done */
@@ -183,7 +224,11 @@ int inf_header(FILE *source, FILE *dest)
 
   /* clean up and return */
   (void) inflateEnd(&strm);
-  return ret == Z_STREAM_END ? Z_OK : Z_DATA_ERROR;
+  if (ret == Z_STREAM_END) {
+    return retVal;
+  } else {
+    throw Z_DATA_ERROR;
+  }
 }
 
 /* Decompress from file source to file dest until stream ends or EOF.
@@ -192,8 +237,9 @@ int inf_header(FILE *source, FILE *dest)
  invalid or incomplete, Z_VERSION_ERROR if the version of zlib.h and
  the version of the library linked do not match, or Z_ERRNO if there
  is an error reading or writing the files. */
-int inf(FILE *source, FILE *dest)
+stringstream Zlib_facade::inf(FILE *source)
 {
+  stringstream retVal;
   int ret;
   unsigned have;
   z_stream strm;
@@ -208,7 +254,7 @@ int inf(FILE *source, FILE *dest)
   strm.next_in = Z_NULL;
   ret = inflateInit(&strm);
   if (ret != Z_OK) {
-    return ret;
+    throw ret;
   }
   bool skipped = false;
   /* decompress until deflate stream ends or end of file */
@@ -216,7 +262,7 @@ int inf(FILE *source, FILE *dest)
     strm.avail_in = fread(in, 1, CHUNK, source);
     if (ferror(source)) {
       (void) inflateEnd(&strm);
-      return Z_ERRNO;
+      throw Z_ERRNO;
     }
     if (strm.avail_in == 0) {
       break;
@@ -235,7 +281,7 @@ int inf(FILE *source, FILE *dest)
       case Z_DATA_ERROR:
       case Z_MEM_ERROR:
         (void) inflateEnd(&strm);
-        return ret;
+        throw ret;
       }
       have = CHUNK - strm.avail_out;
       int skip = 0;
@@ -249,18 +295,22 @@ int inf(FILE *source, FILE *dest)
         skipped = true;
       }
       string buf((const char *) (out + skip));
-      cout << buf.substr(0, have - skip);
+      retVal << buf.substr(0, have - skip);
     } while (strm.avail_out == 0);
     /* done when inflate() says it's done */
   } while (ret != Z_STREAM_END);
 
   /* clean up and return */
   (void) inflateEnd(&strm);
-  return ret == Z_STREAM_END ? Z_OK : Z_DATA_ERROR;
+  if (ret == Z_STREAM_END) {
+    return retVal;
+  } else {
+    throw Z_DATA_ERROR;
+  }
 }
 
 /* report a zlib or i/o error */
-void zerr(int ret)
+void Zlib_facade::zerr(int ret)
 {
   fputs("zpipe: ", stderr);
   switch (ret) {
@@ -283,38 +333,5 @@ void zerr(int ret)
     break;
   case Z_VERSION_ERROR:
     fputs("zlib version mismatch!\n", stderr);
-  }
-}
-
-/* compress or decompress from stdin to stdout */
-int main_old(int argc, char **argv)
-{
-  int ret;
-
-  /* avoid end-of-line conversions */
-  SET_BINARY_MODE(stdin);SET_BINARY_MODE(stdout);
-
-  /* do compression if no arguments */
-  if (argc == 1) {
-    ret = def(stdin, stdout, Z_DEFAULT_COMPRESSION);
-    if (ret != Z_OK) {
-      zerr(ret);
-    }
-    return ret;
-  }
-
-  /* do decompression if -d specified */
-  else if (argc == 2 && strcmp(argv[1], "-d") == 0) {
-    ret = inf(stdin, stdout);
-    if (ret != Z_OK) {
-      zerr(ret);
-    }
-    return ret;
-  }
-
-  /* otherwise, report usage */
-  else {
-    fputs("zpipe usage: zpipe [-d] < source > dest\n", stderr);
-    return 1;
   }
 }
