@@ -29,14 +29,18 @@ void Rev_parse::execute()
   vector<string> path = receiver->getPath();
   for (string argument : path) {
     if (argument == "HEAD") {
-
+      //TODO get correct work area directory; this only works when I am in the root
       // open file, read contents
       ifstream infile(".git/HEAD");
       string line;
       while (getline(infile, line)) {
         // assume it starts with "ref: "
-        string reference(line.substr(5,line.length()));
-        cout << reference << endl;
+        string reference(line.substr(5, line.length()));
+        //cout << reference << endl;
+        ifstream reference_file(".git/" + reference);
+        while (getline(reference_file, line)) {
+          cout << line << endl;
+        }
       }
     }
   }
