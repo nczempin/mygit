@@ -7,6 +7,7 @@
 #include "Command.h"
 #include "Rev_parse.h"
 #include "MyGit.h"
+#include "Utils.h"
 
 #include <string>
 #include <vector>
@@ -27,17 +28,19 @@ Rev_parse::~Rev_parse()
 void Rev_parse::execute()
 {
   vector<string> path = receiver->getPath();
+  string war = Utils::getWorkareaRoot();
+  //cout << war << endl;
   for (string argument : path) {
     if (argument == "HEAD") {
       //TODO get correct work area directory; this only works when I am in the root
       // open file, read contents
-      ifstream infile(".git/HEAD");
+      ifstream infile(war + "/.git/HEAD");
       string line;
       while (getline(infile, line)) {
         // assume it starts with "ref: "
         string reference(line.substr(5, line.length()));
         //cout << reference << endl;
-        ifstream reference_file(".git/" + reference);
+        ifstream reference_file(war + "/.git/" + reference);
         while (getline(reference_file, line)) {
           cout << line << endl;
         }
