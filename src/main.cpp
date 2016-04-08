@@ -10,6 +10,8 @@
 
 #include "Cat_file.h"
 #include "Hash_object.h"
+#include "Rev_parse.h"
+
 #include "MyGit.h"
 
 using namespace std;
@@ -78,7 +80,7 @@ shared_ptr<Command> determine_command(shared_ptr<MyGit> mygit, int argc,
   }
   string searching_for(argv[1]);
   vector<string> commands =
-    { "hash-object", "cat-file" };
+    { "hash-object", "cat-file", "rev-parse" };
   auto it = find(begin(commands), end(commands), searching_for);
   if (it == end(commands)) {
     cout << "mygit: '" << argv[1]
@@ -101,6 +103,11 @@ shared_ptr<Command> determine_command(shared_ptr<MyGit> mygit, int argc,
   case 1:
     command = new Cat_file(mygit);
     break;
+  case 2:
+    command = new Rev_parse(mygit);
+    break;
+  default:
+    throw -7; //TODO
 
   }
   shared_ptr<Command> p(command);

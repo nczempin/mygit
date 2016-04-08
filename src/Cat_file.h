@@ -16,7 +16,6 @@
 #include "Command.h"
 #include "MyGit.h"
 
-
 using namespace std;
 
 class Cat_file: public Command
@@ -33,15 +32,12 @@ public:
 //  shared_ptr<CommandParameter> createCommandParameter();
 
 private:
-  shared_ptr<MyGit> mygit;
 
-  string get_absolute_path(string path);
-  bool find_dir(string name, string dirpath);
   stringstream uncompress(const string& path);
 
-	void set_option_type(bool option_type);
+  void set_option_type(bool option_type);
 
-	bool option_type;
+  bool option_type;
 };
 
 #endif /* CAT_FILE_H_ */

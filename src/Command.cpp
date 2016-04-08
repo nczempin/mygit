@@ -7,14 +7,13 @@
 
 #include "Command.h"
 
-Command::Command()
+Command::Command(shared_ptr<MyGit> mg) :
+    receiver(mg)
 {
-    // TODO Auto-generated constructor stub
-
 }
 
 Command::~Command()
 {
-    // TODO Auto-generated destructor stub
+  // TODO Auto-generated destructor stub
 }
 
