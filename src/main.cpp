@@ -10,6 +10,8 @@
 
 #include "Cat_file.h"
 #include "Hash_object.h"
+#include "Rev_parse.h"
+
 #include "MyGit.h"
 
 using namespace std;
@@ -100,6 +102,9 @@ shared_ptr<Command> determine_command(shared_ptr<MyGit> mygit, int argc,
     break;
   case 1:
     command = new Cat_file(mygit);
+    break;
+  case 2:
+    command = new Rev_parse(mygit);
     break;
   default:
     throw -7; //TODO
