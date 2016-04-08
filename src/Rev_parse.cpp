@@ -10,6 +10,7 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -29,39 +30,18 @@ void Rev_parse::execute()
   for (string argument : path) {
     if (argument == "HEAD") {
 
+      // open file, read contents
+      ifstream infile(".git/HEAD");
+      string line;
+      while (getline(infile, line)) {
+        // assume it starts with "ref: "
+        string reference(line.substr(5,line.length()));
+        cout << reference << endl;
+      }
     }
   }
-  /* // 1. determine .git path
-   //    a. determine absolute path of current directory
-   string name(".git");
-   bool found = false;
-   bool done = false;
-   string path = get_absolute_path(".");
-   while (!found && !done) {
-   //cout << "cwd: " << path << endl;
-   //    b. recurse up until one directory contains a .git dir
-   //(TODO: what to do when inside .git?)
-   //      i. check current directory
-   found = find_dir(name, path);
-   if (found) {
-   break;
-   }
-   //        ii. if not found at the top, we are not inside a git workdir
-   size_t pos = path.find_last_of("/"); //TODO platform-specific
-   if (pos == string::npos) {
-   done = true;
-   }
-   path = path.substr(0, pos);
-   }
-   //        iii. if not found, go up the tree
 
-   if (done) {
-   cout
-   << "fatal: Not a git repository (or any of the parent directories): .git"
-   << endl;
-   throw 128;
-   }
-   path += "/" + name + "/objects";
+  /*
    //cout << "Proceeding with " << path << endl;
 
    // 2. convert sha1 param into path relative from .git
