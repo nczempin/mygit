@@ -1,5 +1,5 @@
 /*
- * Hashobject.cpp
+ * Cat_file.cpp
  *
  *  Created on: Mar 29, 2016
  *      Author: nczempin
@@ -24,8 +24,9 @@
 using namespace std;
 
 Cat_file::Cat_file(shared_ptr<MyGit> mg) :
-    mygit(mg)
+    Command(mg)
 {
+  option_type = false;
 }
 
 Cat_file::~Cat_file()
@@ -106,7 +107,7 @@ void Cat_file::execute()
   //cout << "Proceeding with " << path << endl;
 
   // 2. convert sha1 param into path relative from .git
-  vector<string> varargs = mygit->getPath();
+  vector<string> varargs = receiver->getPath();
   //TODO obviously not a path
   if (!option_type && varargs[0] != "blob") {
     throw 3; //TODO handle properly

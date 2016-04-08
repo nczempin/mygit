@@ -1,10 +1,10 @@
 /*
- * Hashobject.cpp
+ * Hash_object.cpp
  *
  *  Created on: Mar 29, 2016
  *      Author: nczempin
  */
-
+#include "Command.h"
 #include "Hash_object.h"
 
 #include <openssl/sha.h>
@@ -16,7 +16,7 @@
 using namespace std;
 
 Hash_object::Hash_object(shared_ptr<MyGit> mg) :
-    mygit(mg)
+    Command(mg)
 {
 }
 
@@ -35,7 +35,7 @@ void Hash_object::execute()
 {
   ifstream myfile;
   //TODO handle multiple files as parameter
-  vector<string> varargs = mygit->getPath();
+  vector<string> varargs = receiver->getPath();
   string path = varargs[0]; //TODO assumption
   myfile.open(path);
   ostringstream file_contents;

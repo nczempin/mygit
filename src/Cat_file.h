@@ -33,7 +33,6 @@ public:
 //  shared_ptr<CommandParameter> createCommandParameter();
 
 private:
-  shared_ptr<MyGit> mygit;
 
   string get_absolute_path(string path);
   bool find_dir(string name, string dirpath);
