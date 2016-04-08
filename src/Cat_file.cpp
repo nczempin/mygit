@@ -6,6 +6,7 @@
  */
 
 #include "Cat_file.h"
+#include "Utils.h"
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -34,37 +35,6 @@ Cat_file::~Cat_file()
   // TODO Auto-generated destructor stub
 }
 
-string Cat_file::get_absolute_path(string path)
-{
-  // 1. determine .git path
-  //    a. determine absolute path of current directory
-  long size = 255;
-  char* buf;
-  char* ptr;
-  size = pathconf(path.c_str(), _PC_PATH_MAX);
-  if ((buf = (char*) (malloc((size_t) (size)))) != NULL) {
-    ptr = getcwd(buf, (size_t) (size));
-  }
-  string cwd(ptr);
-  return cwd;
-}
-
-bool Cat_file::find_dir(string name, string dirpath)
-{
-  DIR *dirp = opendir(dirpath.c_str());
-
-  dirent* dp;
-  bool found = false;
-  while ((dp = readdir(dirp)) != NULL) {
-    if (!strcmp(dp->d_name, name.c_str())) { //TODO strcmp is C, not C++
-      found = true;
-      break;
-    }
-  }
-  closedir(dirp);
-  return found;
-}
-
 stringstream Cat_file::uncompress(const string& path)
 {
   stringstream buffer = Zlib_facade::uncompress(path, option_type);
@@ -75,35 +45,8 @@ void Cat_file::execute()
 {
   // 1. determine .git path
   //    a. determine absolute path of current directory
-  string name(".git");
-  bool found = false;
-  bool done = false;
-  string path = get_absolute_path(".");
-  while (!found && !done) {
-    //cout << "cwd: " << path << endl;
-    //    b. recurse up until one directory contains a .git dir
-    //(TODO: what to do when inside .git?)
-    //      i. check current directory
-    found = find_dir(name, path);
-    if (found) {
-      break;
-    }
-    //        ii. if not found at the top, we are not inside a git workdir
-    size_t pos = path.find_last_of("/"); //TODO platform-specific
-    if (pos == string::npos) {
-      done = true;
-    }
-    path = path.substr(0, pos);
-  }
-  //        iii. if not found, go up the tree
-
-  if (done) {
-    cout
-        << "fatal: Not a git repository (or any of the parent directories): .git"
-        << endl;
-    throw 128;
-  }
-  path += "/" + name + "/objects";
+  string path = Utils::getWorkareaRoot();
+  path += "/.git/";
   //cout << "Proceeding with " << path << endl;
 
   // 2. convert sha1 param into path relative from .git

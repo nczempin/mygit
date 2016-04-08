@@ -8,8 +8,13 @@
 #include "Rev_parse.h"
 #include "MyGit.h"
 
+#include <string>
+#include <vector>
+
+using namespace std;
+
 Rev_parse::Rev_parse(shared_ptr<MyGit> mg) :
-Command(mg)
+    Command(mg)
 {
 }
 
@@ -20,7 +25,12 @@ Rev_parse::~Rev_parse()
 
 void Rev_parse::execute()
 {
-  throw 42;
+  vector<string> path = receiver->getPath();
+  for (string argument : path) {
+    if (argument == "HEAD") {
+
+    }
+  }
   /* // 1. determine .git path
    //    a. determine absolute path of current directory
    string name(".git");
