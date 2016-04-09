@@ -9,10 +9,10 @@
 #include <vector>
 
 #include "Cat_file.h"
+#include "Command_receiver.h"
 #include "Hash_object.h"
 #include "Rev_parse.h"
 
-#include "MyGit.h"
 
 using namespace std;
 
@@ -35,7 +35,7 @@ void print_usage()
   cout << "to read about a specific subcommand or concept." << endl;
 }
 
-void hopt(shared_ptr<Command> command, int c, int option_index,
+void hopt(shared_ptr<Abstract_command> command, int c, int option_index,
     struct option* long_options)
 {
   option long_option = long_options[option_index];
@@ -50,17 +50,17 @@ void hopt(shared_ptr<Command> command, int c, int option_index,
   }
 }
 
-void handle_options(shared_ptr<Command> command, int argc, char* argv[])
+void handle_options(shared_ptr<Abstract_command> command, int argc, char* argv[])
 {
   int c;
   while (1) {
-    vector<option> long_options1 = command->getLongOptions(); //long_options_();
+    vector<option> long_options1 = command->get_long_options(); //long_options_();
     long_options1.push_back(
       { 0, 0, 0, 0 }); // for handling the options
     option* long_options = &long_options1[0];
     /* getopt_long stores the option index here. */
     int option_index = 0;
-    string short_options_hash_object = command->getShortOptions();
+    string short_options_hash_object = command->get_short_options();
     c = getopt_long(argc, argv, short_options_hash_object.c_str(), long_options,
         &option_index);
     /* Detect the end of the options. */
@@ -71,7 +71,7 @@ void handle_options(shared_ptr<Command> command, int argc, char* argv[])
   }
 }
 
-shared_ptr<Command> determine_command(shared_ptr<MyGit> mygit, int argc,
+shared_ptr<Abstract_command> determine_command(shared_ptr<Command_receiver> mygit, int argc,
     char* argv[])
 {
   if (argc == 1) {
@@ -95,7 +95,7 @@ shared_ptr<Command> determine_command(shared_ptr<MyGit> mygit, int argc,
 //  }
 
   //TODO do this more elegantly
-  Command* command;
+  Abstract_command* command;
   switch (pos) {
   case 0:
     command = new Hash_object(mygit);
@@ -110,15 +110,15 @@ shared_ptr<Command> determine_command(shared_ptr<MyGit> mygit, int argc,
     throw -7; //TODO
 
   }
-  shared_ptr<Command> p(command);
+  shared_ptr<Abstract_command> p(command);
   return p;
 }
 
 int main(int argc, char* argv[])
 {
-  shared_ptr<MyGit> mygit(new MyGit());
+  shared_ptr<Command_receiver> mygit(new Command_receiver());
   //mygit->setPath("1");
-  shared_ptr<Command> command;
+  shared_ptr<Abstract_command> command;
   try {
 
     command = determine_command(mygit, argc, argv);
@@ -163,7 +163,7 @@ int main(int argc, char* argv[])
   // TODO set parameters / handle options
   //for (string path : varargs) {
   try {
-    mygit->setPath(varargs);
+    mygit->setArguments(varargs);
     command->execute();
   } catch (int n) {
 //      cout << n << endl;

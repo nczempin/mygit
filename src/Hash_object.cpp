@@ -4,7 +4,6 @@
  *  Created on: Mar 29, 2016
  *      Author: nczempin
  */
-#include "Command.h"
 #include "Hash_object.h"
 
 #include <openssl/sha.h>
@@ -13,10 +12,12 @@
 #include <iostream>
 #include <sstream>
 
+#include "Abstract_command.h"
+
 using namespace std;
 
-Hash_object::Hash_object(shared_ptr<MyGit> mg) :
-    Command(mg)
+Hash_object::Hash_object(shared_ptr<Command_receiver> receiver) :
+    Abstract_command(receiver)
 {
 }
 
@@ -35,7 +36,7 @@ void Hash_object::execute()
 {
   ifstream myfile;
   //TODO handle multiple files as parameter
-  vector<string> varargs = receiver->getPath();
+  vector<string> varargs = receiver->getArguments();
   string path = varargs[0]; //TODO assumption
   myfile.open(path);
   ostringstream file_contents;
@@ -76,11 +77,11 @@ void Hash_object::do_long_option(bool flag, string name, string argument)
 //  cout << "argument: " << argument << endl;
 }
 
-string Hash_object::getShortOptions()
+string Hash_object::get_short_options()
 {
   return "wt:";
 }
-vector<option> Hash_object::getLongOptions()
+vector<option> Hash_object::get_long_options()
 {
   vector<option> retval =
     {

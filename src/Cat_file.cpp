@@ -24,8 +24,8 @@
 
 using namespace std;
 
-Cat_file::Cat_file(shared_ptr<MyGit> mg) :
-    Command(mg)
+Cat_file::Cat_file(shared_ptr<Command_receiver> receiver) :
+    Abstract_command(receiver)
 {
   option_type = false;
 }
@@ -50,7 +50,7 @@ void Cat_file::execute()
   //cout << "Proceeding with " << path << endl;
 
   // 2. convert sha1 param into path relative from .git
-  vector<string> varargs = receiver->getPath();
+  vector<string> varargs = receiver->getArguments();
   //TODO obviously not a path
   if (!option_type && varargs[0] != "blob") {
     throw 3; //TODO handle properly
@@ -80,11 +80,11 @@ void Cat_file::do_long_option(bool flag, string name, string argument)
   cout << "argument: " << argument << endl;
 }
 
-string Cat_file::getShortOptions()
+string Cat_file::get_short_options()
 {
   return "t";
 }
-vector<option> Cat_file::getLongOptions()
+vector<option> Cat_file::get_long_options()
 {
   vector<option> retval =
     {

@@ -1,16 +1,17 @@
 /*
  * Command.cpp
  *
- *  Created on: Mar 31, 2016
+ *  Created on: Apr 9, 2016
  *      Author: nczempin
  */
 
 #include "Command.h"
 
-Command::Command(shared_ptr<MyGit> mg) :
-    receiver(mg)
+Command::Command(shared_ptr<Command_receiver> receiver) :
+    receiver(receiver)
 {
 }
+
 
 Command::~Command()
 {

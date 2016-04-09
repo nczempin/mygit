@@ -4,19 +4,20 @@
  *  Created on: Apr 8, 2016
  *      Author: nczempin
  */
-#include "Command.h"
 #include "Rev_parse.h"
-#include "MyGit.h"
 #include "Utils.h"
 
 #include <string>
 #include <vector>
 #include <fstream>
 
+#include "Abstract_command.h"
+#include "Command_receiver.h"
+
 using namespace std;
 
-Rev_parse::Rev_parse(shared_ptr<MyGit> mg) :
-    Command(mg)
+Rev_parse::Rev_parse(shared_ptr<Command_receiver> receiver) :
+    Abstract_command(receiver)
 {
 }
 
@@ -27,7 +28,7 @@ Rev_parse::~Rev_parse()
 
 void Rev_parse::execute()
 {
-  vector<string> path = receiver->getPath();
+  vector<string> path = receiver->getArguments();
   string war = Utils::getWorkareaRoot();
   //cout << war << endl;
   for (string argument : path) {
@@ -82,11 +83,11 @@ void Rev_parse::do_long_option(bool flag, string name, string argument)
   cout << "argument: " << argument << endl;
 }
 
-string Rev_parse::getShortOptions()
+string Rev_parse::get_short_options()
 {
   return "t";
 }
-vector<option> Rev_parse::getLongOptions()
+vector<option> Rev_parse::get_long_options()
 {
   vector<option> retval =
     {
