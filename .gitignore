@@ -82,3 +82,8 @@ packages/
 *.testsettings
 UserInterfaceState.xcuserstate
 /Default/
+
+# Eclipse/IDE files
+.cproject
+.project
+.settings/
