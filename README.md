@@ -22,6 +22,20 @@ vehicle and a demonstration of how Git objects are created and read.
 * To gain a practical understanding of Git internals by writing them in C++.
 * To demonstrate how common Git commands work under the hood.
 
+## Quick start
+
+Clone the repository and build the tool:
+```bash
+make
+```
+
+Hash a file:
+```bash
+./mygit hash-object <file>
+```
+
+This prints the file's SHA-1, mirroring Git's `hash-object` command.
+
 ## Current functionality
 
 Implemented commands:
@@ -38,6 +52,10 @@ real Git command.
 Planned features are limited to expanding existing commands and experimenting
 with additional plumbing operations. `mygit` is intentionally small and will not
 attempt to match all of Git's functionality.
+
+## Development status
+
+This project is an early prototype. Only a few plumbing commands work, so expect missing features and potential bugs.
 
 ## Setup
 
